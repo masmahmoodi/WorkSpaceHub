@@ -17,7 +17,7 @@ class ProjectListCreateView(ListCreateAPIView):
 class ProjectRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProjectSerializer
-
+    # show data to authorized users
     def get_queryset(self):
         return Project.objects.filter(owner=self.request.user)
     

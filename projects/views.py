@@ -1,7 +1,9 @@
-from .serializers import ProjectSerializer
+from .serializers import ProjectSerializer, TaskSerializer
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
-from .models import Project
+from .models import Project,Task
 from rest_framework.permissions import IsAuthenticated
+
+from django.shortcuts import get_object_or_404
 #  projects list and create view
 class ProjectListCreateView(ListCreateAPIView):
     serializer_class = ProjectSerializer
@@ -22,3 +24,36 @@ class ProjectRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         return Project.objects.filter(owner=self.request.user)
     
 
+
+class TaskListCreateView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TaskSerializer
+
+    def get_project(self):
+        return get_object_or_404(
+            Project,
+            id=self.kwargs["project_id"],
+            owner=self.request.user,
+        )
+
+    
+
+    def perform_create(self,serializer):
+        project = self.get_project()
+
+        return serializer.save(project=project)
+    
+    def  get_queryset(self):
+        project = self.get_project()
+        return Task.objects.filter(project=project)
+    
+
+class TaskDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TaskSerializer
+
+   
+
+    def get_queryset(self):
+        project = get_object_or_404(Project,id=self.kwargs["project_id"], owner=self.request.user)
+        return Task.objects.filter(project=project)

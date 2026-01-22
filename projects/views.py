@@ -3,11 +3,24 @@ from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIVi
 from .models import Project,Task
 from rest_framework.permissions import IsAuthenticated
 
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+
+
 from django.shortcuts import get_object_or_404
 #  projects list and create view
 class ProjectListCreateView(ListCreateAPIView):
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
+
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["name"]
+    search_fields = ["name", "description"]
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["-created_at"]
+
+
+
 
     def get_queryset(self):
         return Project.objects.filter(owner=self.request.user)
@@ -19,6 +32,7 @@ class ProjectListCreateView(ListCreateAPIView):
 class ProjectRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProjectSerializer
+
     # show data to authorized users
     def get_queryset(self):
         return Project.objects.filter(owner=self.request.user)
@@ -28,6 +42,13 @@ class ProjectRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
 class TaskListCreateView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TaskSerializer
+
+
+    filterset_fields = [DjangoFilterBackend,SearchFilter,OrderingFilter]
+
+    search_fields = ["title","status"]
+    ordering_fields = ["created_at", "updated_at", "status"]
+    ordering = ["-created_at"]
 
     def get_project(self):
         return get_object_or_404(

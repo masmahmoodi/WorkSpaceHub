@@ -44,11 +44,12 @@ class TaskListCreateView(ListCreateAPIView):
     serializer_class = TaskSerializer
 
 
-    filterset_fields = [DjangoFilterBackend,SearchFilter,OrderingFilter]
-
-    search_fields = ["title","status"]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ["status"]
+    search_fields = ["title", "description"]
     ordering_fields = ["created_at", "updated_at", "status"]
     ordering = ["-created_at"]
+
 
     def get_project(self):
         return get_object_or_404(

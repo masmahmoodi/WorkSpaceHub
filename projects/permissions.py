@@ -1,6 +1,6 @@
 
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-
+#  Custom permission classes 
 class IsProjectOwner(BasePermission):
 
 
@@ -9,7 +9,6 @@ class IsProjectOwner(BasePermission):
 
 
 class IsTaskProjectOwner(BasePermission):
-   
 
     def has_object_permission(self, request, view, obj):
         return obj.project.owner == request.user

@@ -17,4 +17,4 @@ class MeView(APIView):
 
 class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
-    peremission_classes = [AllowAny]
+    permission_classes = [AllowAny]

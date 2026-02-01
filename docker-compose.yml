@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: workspacehub_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: workspacehub
+      POSTGRES_USER: workspacehub
+      POSTGRES_PASSWORD: workspacehub_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - workspacehub_pgdata:/var/lib/postgresql/data
+
+volumes:
+  workspacehub_pgdata:
